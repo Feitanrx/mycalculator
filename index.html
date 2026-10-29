@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Moderna</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #0f1115;
+            margin: 0;
+        }
+        .calculator {
+            background: #1c1f26;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 320px;
+            border: 1px solid #2d323e;
+        }
+        .display {
+            background: #111318;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: right;
+            border: 1px solid #282d38;
+        }
+        .history {
+            color: #6b7280;
+            font-size: 0.9rem;
+            min-height: 20px;
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+        .current {
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        button {
+            padding: 15px 0;
+            background-color: #282d38;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background-color: #373f4e;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .btn-operator {
+            background-color: #312e81;
+            color: #818cf8;
+        }
+        .btn-operator:hover {
+            background-color: #3730a3;
+        }
+        .btn-equals {
+            background-color: #4f46e5;
+            color: white;
+            grid-column: span 2;
+        }
+        .btn-equals:hover {
+            background-color: #4338ca;
+        }
+        .btn-action {
+            background-color: #374151;
+            color: #d1d5db;
+        }
+        .btn-action:hover {
+            background-color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculator">
+        <div class="display">
+            <div id="history" class="history"></div>
+            <div id="current" class="current">0</div>
+        </div>
+        
+        <div class="buttons-grid">
+            <button type="button" class="btn-action" onclick="limpar()">C</button>
+            <button type="button" class="btn-action" onclick="apagarUltimo()">⌫</button>
+            <button type="button" class="btn-action" onclick="inserirOperacao('%')">%</button>
+            <button type="button" class="btn-operator" onclick="inserirOperacao('÷')">÷</button>
+
+            <button type="button" onclick="inserirNumero('7')">7</button>
+            <button type="button" onclick="inserirNumero('8')">8</button>
+            <button type="button" onclick="inserirNumero('9')">9</button>
+            <button type="button" class="btn-operator" onclick="inserirOperacao('×')">×</button>
+
+            <button type="button" onclick="inserirNumero('4')">4</button>
+            <button type="button" onclick="inserirNumero('5')">5</button>
+            <button type="button" onclick="inserirNumero('6')">6</button>
+            <button type="button" class="btn-operator" onclick="inserirOperacao('-')">-</button>
+
+            <button type="button" onclick="inserirNumero('1')">1</button>
+            <button type="button" onclick="inserirNumero('2')">2</button>
+            <button type="button" onclick="inserirNumero('3')">3</button>
+            <button type="button" class="btn-operator" onclick="inserirOperacao('+')">+</button>
+
+            <button type="button" onclick="inserirNumero('0')">0</button>
+            <button type="button" onclick="inserirPonto()">.</button>
+            <button type="button" class="btn-equals" onclick="calcular()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let valorAtual = '0';
+        let valorAnterior = '';
+        let operacaoAtual = null;
+
+        const currentDisplay = document.getElementById('current');
+        const historyDisplay = document.getElementById('history');
+
+        function atualizarVisor() {
+            currentDisplay.innerText = valorAtual;
+            historyDisplay.innerText = valorAnterior + (operacaoAtual ? ` ${operacaoAtual} ` : '');
+        }
+
+        function inserirNumero(num) {
+            if (valorAtual === '0') {
+                valorAtual = num;
+            } else {
+                valorAtual += num;
+            }
+            atualizarVisor();
+        }
+
+        function inserirPonto() {
+            if (!valorAtual.includes('.')) {
+                valorAtual += '.';
+                atualizarVisor();
+            }
+        }
+
+        function limpar() {
+            valorAtual = '0';
+            valorAnterior = '';
+            operacaoAtual = null;
+            atualizarVisor();
+        }
+
+        function apagarUltimo() {
+            if (valorAtual.length > 1) {
+                valorAtual = valorAtual.slice(0, -1);
+            } else {
+                valorAtual = '0';
+            }
+            atualizarVisor();
+        }
+
+        function inserirOperacao(op) {
+            if (valorAnterior !== '' && operacaoAtual !== null) {
+                operacaoAtual = op;
+                atualizarVisor();
+                return;
+            }
+            valorAnterior = valorAtual;
+            valorAtual = '0';
+            operacaoAtual = op;
+            atualizarVisor();
+        }
+
+        // Mapeia os símbolos visuais para as chaves exatas do seu Backend
+        function obterNomeOperacao(op) {
+            switch(op) {
+                case '+': return 'sum';
+                case '-': return 'subtraction';
+                case '×': return 'multiplication';
+                case '÷': return 'division';
+                default: return 'sum';
+            }
+        }
+
+        async function calcular() {
+            if (!operacaoAtual || valorAnterior === '') return;
+
+            const num1 = parseFloat(valorAnterior);
+            const num2 = parseFloat(valorAtual);
+            const operacaoMapeada = obterNomeOperacao(operacaoAtual);
+
+            const url = 'http://localhost:8080/api/calculate';
+
+            const dados = {
+                num1: num1,
+                num2: num2,
+                operacao: operacaoMapeada
+            };
+
+            console.log("Enviando JSON:", JSON.stringify(dados));
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                if (!response.ok) {
+                    currentDisplay.innerText = 'Erro Backend';
+                    return;
+                }
+
+                const resultadoJson = await response.json();
+                console.log("Resposta do Quarkus:", resultadoJson);
+                
+                valorAtual = resultadoJson.result.toString();
+                valorAnterior = '';
+                operacaoAtual = null;
+                atualizarVisor();
+
+            } catch (error) {
+                console.error('Erro de conexão:', error);
+                currentDisplay.innerText = 'Erro Conexão';
+            }
+        }
+    </script>
+</body>
+</html>
