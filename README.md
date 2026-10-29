@@ -1,6 +1,19 @@
-# mycalculator
+# My Calculator
 
-In this project the user clicks on the buttons and the calculator does the operation.
+A simple web-based calculator developed to practice Java programming and arithmetic operations.
 
-flow
-Button -> Number to String -> String splitted -> String parsed -> Operation -> Result on Screen
+## Features
+- Performs arithmetic calculations.
+- Processes user input and displays results.
+- Interactive calculator interface.
+
+## Technologies
+- **Java:** Calculation logic and input processing.
+- **Front-End:** Simple front-end design using HTML, CSS, and JavaScript.
+- **Render:** Application deployment.
+
+## Live Demo
+[Access My Calculator](https://mycalculator-b7up.onrender.com/)
+
+## Learning Objectives
+Practice Java programming, string manipulation, input processing, and application deployment.
