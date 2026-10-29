@@ -1,10 +1,10 @@
-# Estágio 1: Compilação da aplicação
+# Estágio 1: Compilação da aplicação via Maven
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 COPY src /home/app/src
 COPY pom.xml /home/app
 RUN mvn -f /home/app/pom.xml clean package
 
-# Estágio 2: Criação do ambiente de execução final do Quarkus
+# Estágio 2: Ambiente pronto para rodar o Quarkus
 FROM ://redhat.com
 
 ENV LANGUAGE='en_US:en'
@@ -13,7 +13,6 @@ USER root
 RUN mkdir -p /deployments/quarkus && chown -R 185 /deployments
 USER 185
 
-# Copia os arquivos gerados no estágio de build para o ambiente final
 COPY --from=build --chown=185 /home/app/target/quarkus-app/*.jar /deployments/
 COPY --from=build --chown=185 /home/app/target/quarkus-app/lib/ /deployments/lib/
 COPY --from=build --chown=185 /home/app/target/quarkus-app/app/ /deployments/app/
